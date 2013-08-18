@@ -17,6 +17,52 @@ function HomeCtrl($scope,navSvc,$rootScope) {
     };
 }
 
+
+var mapController = function($scope,navSvc,$rootScope) {
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+    $('#map').remove();
+  };
+  
+  $('body').append('<div id="map"></div>');
+  var map = L.map('map', {
+    center: [51.505, -0.09],
+    zoom: 13
+  });
+  
+  L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
+      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+      maxZoom: 18
+  }).addTo(map);
+
+  map.locate({setView: true, maxZoom: 16});
+
+  $scope.onLocationFound = function(e) {
+      var radius = e.accuracy / 2;
+
+      L.marker(e.latlng).addTo(map)
+                        .dragging.enable();
+      console.log(e.latlng)
+           
+  }
+
+  map.on('locationfound', $scope.onLocationFound);
+
+  $scope.onLocationError = function(e) {
+    alert(e.message);
+  }
+
+  map.on('locationerror', $scope.onLocationError);
+
+  $scope.onMapClick = function(e) {
+    L.marker(e.latlng).addTo(map)
+      .dragging.enable();
+      console.log(e.latlng)
+  }
+  map.on('click', $scope.onMapClick);
+}
+
+
 function NotificationCtrl($scope) {
     $scope.alertNotify = function() {
         navigator.notification.alert("Sample Alert",function() {console.log("Alert success")},"My Alert","Close");
