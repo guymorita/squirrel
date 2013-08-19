@@ -42,6 +42,7 @@ function HomeCtrl($scope,navSvc,$rootScope, userService) {
     $rootScope.showSettings = false;
     $scope.user = userService.currentUser;
     $scope.slidePage = function (path,type) {
+        $('#map').remove();
         navSvc.slidePage(path,type);
     };
     $scope.back = function () {
@@ -54,6 +55,130 @@ function HomeCtrl($scope,navSvc,$rootScope, userService) {
         $rootScope.showSettings = false;
     };
 }
+
+
+  // this.onLocationFound = function(e) {
+  //     this.radius = e.accuracy / 2;
+
+  //     L.marker(e.latlng).addTo(this.map)
+  //                       .dragging.enable();
+  //     this.newLocation = {
+  //       _id: locationID,
+  //       lat: e.latlng.lat,
+  //       lng: e.latlng.lng
+  //     }
+  //     locationObj[locationID] = newLocation;
+  //     locationID++;
+  // }
+
+  // this.map.on('locationfound', this.onLocationFound);
+
+  // this.onLocationError = function(e) {
+  //   alert(e.message);
+  // }
+
+  // this.map.on('locationerror', this.onLocationError);
+
+var showPinsCtrl = function($scope,navSvc,$rootScope) {
+  $scope.slidePage = function (path,type) {
+    $('#map').remove();
+    navSvc.slidePage(path,type);
+  };
+
+  var pinMap = new Map();
+
+  var test = {
+    0: {
+      _id: 0,
+      latlng: {
+        lat: 37.75599059794776,
+        lng: -122.41307973861694
+      },
+      message: 'helllooo<a href="http://www.google.com">link</a>'
+    },
+    1: {
+      _id: 1,
+      latlng: {
+        lat: 37.75398870275125,
+        lng: -122.40359544754028
+      },
+      message: 'shalom'
+    },
+    2: {
+      _id: 2,
+      latlng: {
+        lat: 37.75656740515542,
+        lng: -122.40295171737671
+      },
+      message: 'wazzza'
+    }
+  }
+
+  var myLocationCreated = false;
+  var circle;
+  var onLocationFound = function(e) {
+    if (myLocationCreated){
+      $(circle._container).remove()
+    }
+    myLocationCreated = true;
+    var radius = 50;
+    circle = L.circle(e.latlng, radius).addTo(pinMap.map);
+  }
+
+  pinMap.map.on('locationfound', onLocationFound);
+
+  setInterval(function(){
+    pinMap.map.locate({setView: false});
+  }, 3000);
+
+  for (var pin in test) {
+    var testmarker = new L.marker(test[pin].latlng);
+    testmarker.addTo(pinMap.map);
+    testmarker.bindPopup(test[pin].message);
+  }
+};
+
+
+var newPinCtrl = function($scope,navSvc,$rootScope) {
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+    $('#map').remove();
+  };
+
+  var locationObj = {}
+  var locationID = 0;
+  var markerCreated = false;
+  var newMap = new Map();
+
+  $scope.onMapClick = function(e) {
+    if (!markerCreated){
+      var marker = new L.marker(e.latlng);
+      marker.addTo(newMap.map)
+        .dragging.enable()
+      var newLocation = {
+        _id: locationID,
+        latlng: {
+          lat: e.latlng.lat,
+          lng: e.latlng.lng
+        }
+       }
+      locationObj[locationID] = newLocation;
+      marker.on('dragend', function(e){
+        locationObj[newLocation._id] = {
+          _id: locationID,
+          latlng: {
+            lat: e.target._latlng.lat,
+            lng: e.target._latlng.lng
+          }
+        }
+      });
+      locationID++;
+      markerCreated = true;
+    }  
+  }
+  newMap.map.on('click', $scope.onMapClick);
+};
+
 
 function NotificationCtrl($scope) {
     $scope.alertNotify = function() {
