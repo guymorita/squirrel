@@ -10,10 +10,12 @@ function LoginCtrl($scope, navSvc, $resource, userService){
   $scope.password = '';
   $scope.fetch = function(){
     var User = $resource('http://0.0.0.0\\:8080/user/login/:username/:password');
-    var user = User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
+    var user = User.get({username:$scope.username, password:$scope.password}, function success(u, getResHeaders){
       console.log('u', u);
       userService.setUser(u);
       $scope.slidePage('/newmessage');
+    }, function error(u){
+      console.log('err u', u);
     });
   };
 }
@@ -30,6 +32,8 @@ function SignUpCtrl($scope, navSvc, $resource, userService){
       console.log('u', u);
       userService.setUser(u);
       $scope.slidePage('/newmessage');
+    }, function error(u){
+
     });
   };
 }
