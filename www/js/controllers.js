@@ -19,47 +19,34 @@ function HomeCtrl($scope,navSvc,$rootScope) {
 
 
 var mapController = function($scope,navSvc,$rootScope) {
-  $scope.slidePage = function (path,type) {
-    navSvc.slidePage(path,type);
-    $('#map').remove();
-  };
-  
-  $('body').append('<div id="map"></div>');
-  var map = L.map('map', {
-    center: [51.505, -0.09],
-    zoom: 13
+  var locationObj = {}
+  var locationID = 0;
+  var newMap = new Map();
+
+// var test = {lat: 37.753785117154536,
+// lng: -122.40147113800049}
+
+$scope.onMapClick = function(e) {
+  var marker = new L.marker(e.latlng)
+  marker.addTo(newMap.map)
+        .dragging.enable()
+  var newLocation = {
+    _id: locationID,
+    lat: e.latlng.lat,
+    lng: e.latlng.lng
+  }
+  locationObj[locationID] = newLocation;
+  marker.on('dragend', function(e){
+    locationObj[newLocation._id] = {
+      _id: locationID,
+      lat: e.target._latlng.lat,
+      lng: e.target._latlng.lng
+    }
   });
+  locationID++;
+  }
   
-  L.tileLayer('http://otile3.mqcdn.com/tiles/1.0.0/osm/{z}/{x}/{y}.png', {
-      attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-      maxZoom: 18
-  }).addTo(map);
-
-  map.locate({setView: true, maxZoom: 16});
-
-  $scope.onLocationFound = function(e) {
-      var radius = e.accuracy / 2;
-
-      L.marker(e.latlng).addTo(map)
-                        .dragging.enable();
-      console.log(e.latlng)
-           
-  }
-
-  map.on('locationfound', $scope.onLocationFound);
-
-  $scope.onLocationError = function(e) {
-    alert(e.message);
-  }
-
-  map.on('locationerror', $scope.onLocationError);
-
-  $scope.onMapClick = function(e) {
-    L.marker(e.latlng).addTo(map)
-      .dragging.enable();
-      console.log(e.latlng)
-  }
-  map.on('click', $scope.onMapClick);
+  newMap.map.on('click', $scope.onMapClick);
 }
 
 
