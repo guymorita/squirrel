@@ -13,15 +13,12 @@
         </a>
     </div>
 </div>
-<div class="topcoat-list__container list">
-    <h3 class="topcoat-list__header">new user</h3>
-    <ul class="topcoat-list">
-        <button class="topcoat-list__item--first" ng-click="slidePage('/auth')">
-            Enter Auth Code
-        </button>
-    </ul>
-    <div class="topcoat-navigation-bar">
-        <h1 class="centerize"  ng-show="!showURL" ng-swipe-left="showURL=true">Version  {{' %VERSION%' | interpolate}} </h1>
-    </div>
+<div class="topcoat-list__container list" ng-controller="SignUpCtrl">
+    <h3 class="topcoat-list__header">Sign Up</h3>
+    <input type="text" class="topcoat-text-input" value="" placeholder="username" ng-model="username">
+    <input type="text" class="topcoat-text-input" value="" placehodler="password" ng-model="password">
+    <button class="topcoat-button--cta" ng-click="fetch()">Enter</button>
+    <h3>{{username}}</h3>
+    <h3>{{password}}</h3>
 </div>
 <ng-include src="'partials/settingsOverlay.html'"></ng-include>

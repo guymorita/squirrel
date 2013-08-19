@@ -8,12 +8,16 @@
         </a>
     </div>
 </div>
-<div class="topcoat-list__container list" ng-controller="LoginCtrl">
-    <h3 class="topcoat-list__header">Login</h3>
-    <input type="text" class="topcoat-text-input" value="" placeholder="username" ng-model="username">
-    <input type="text" class="topcoat-text-input" value="" placehodler="password" ng-model="password">
-    <button class="topcoat-button--cta" ng-click="fetch()">Enter</button>
-    <h3>{{username}}</h3>
-    <h3>{{password}}</h3>
+<div class="topcoat-list__container list">
+    <h3 class="topcoat-list__header">user signin</h3>
+    <ul class="topcoat-list">
+        <button class="topcoat-list__item--first" ng-click="slidePage('/login')">
+            Login
+        </button>
+        <button class="topcoat-list__item" ng-click="slidePage('/signup')">
+            Sign Up
+        </button>
+    </ul>
+
 </div>
 <ng-include src="'partials/settingsOverlay.html'"></ng-include>

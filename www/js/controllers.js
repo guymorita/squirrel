@@ -1,8 +1,42 @@
 'use strict';
 
 /* Controllers */
-function HomeCtrl($scope,navSvc,$rootScope) {
+
+function LoginCtrl($scope, navSvc, $resource, userService){
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+  };
+  $scope.username = '';
+  $scope.password = '';
+  $scope.fetch = function(){
+    var User = $resource('http://0.0.0.0\\:8080/user/login/:username/:password');
+    var user = User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
+      console.log('u', u);
+      userService.setUser(u);
+      $scope.slidePage('/newmessage');
+    });
+  };
+}
+
+function SignUpCtrl($scope, navSvc, $resource, userService){
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+  };
+  $scope.username = '';
+  $scope.password = '';
+  $scope.fetch = function(){
+    var User = $resource('http://0.0.0.0\\:8080/user/new/:username/:password');
+    var user = User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
+      console.log('u', u);
+      userService.setUser(u);
+      $scope.slidePage('/newmessage');
+    });
+  };
+}
+
+function HomeCtrl($scope,navSvc,$rootScope, userService) {
     $rootScope.showSettings = false;
+    $scope.user = userService.currentUser;
     $scope.slidePage = function (path,type) {
         $('#map').remove();
         navSvc.slidePage(path,type);
@@ -146,15 +180,15 @@ function NotificationCtrl($scope) {
     $scope.alertNotify = function() {
         navigator.notification.alert("Sample Alert",function() {console.log("Alert success")},"My Alert","Close");
     };
-    
+
     $scope.beepNotify = function() {
         navigator.notification.beep(1);
     };
-    
+
     $scope.vibrateNotify = function() {
         navigator.notification.vibrate(3000);
     };
-    
+
     $scope.confirmNotify = function() {
         navigator.notification.confirm("My Confirmation",function(){console.log("Confirm Success")},"Are you sure?",["Ok","Cancel"]);
     };
@@ -226,4 +260,3 @@ function CameraCtrl($scope) {
 
 
 
-                     

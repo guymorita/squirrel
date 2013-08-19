@@ -7,20 +7,29 @@ angular.module('myApp.services', []).
   value('version', '0.1');
 
 // phonegap ready service - listens to deviceready
+
+myApp.factory('userService', function(){
+    return {
+        currentUser: null,
+        setUser: function(userObject){
+          this.currentUser = userObject;
+        }
+    };
+});
 myApp.factory('phonegapReady', function() {
     return function (fn) {
         var queue = [];
         var impl = function () {
         queue.push(Array.prototype.slice.call(arguments));
     };
-              
+
     document.addEventListener('deviceready', function () {
         queue.forEach(function (args) {
             fn.apply(this, args);
         });
         impl = fn;
     }, false);
-              
+
     return function () {
         return impl.apply(this, arguments);
         };
