@@ -13,16 +13,13 @@
         </a>
     </div>
 </div>
-<div class="topcoat-list__container list">
+<div class="topcoat-list__container list" ng-controller="NewMessage">
     <h3 class="topcoat-list__header">message messages</h3>
     <ul class="topcoat-list">
-        <button class="topcoat-list__item--first" ng-click="slidePage('/map')">
-            Choose Location
-        </button>
     </ul>
-    <h1>{{user | json}}</h1>
-    <div class="topcoat-navigation-bar">
-        <h1 class="centerize"  ng-show="!showURL" ng-swipe-left="showURL=true">Version  {{' %VERSION%' | interpolate}} </h1>
-    </div>
+    <input type="text" class="topcoat-text-input" value="" placehodler="enter title" ng-model="title">
+    <br><input type="text" class="topcoat-text-input" value="" placehodler="content" ng-model="content">
+    <br>Hidden? <input type="checkbox" class="topcoat-checkbox" ng-model="hidden"></input>
+    <br><button class="topcoat-list__item" ng-click="next('/map')">Choose Location</button>
 </div>
 <ng-include src="'partials/settingsOverlay.html'"></ng-include>

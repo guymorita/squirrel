@@ -12,9 +12,7 @@ var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.d
     }])
     .config(['$routeProvider', function($routeProvider) {
         $routeProvider.when('/view1', {templateUrl: 'partials/notificationView.html'});
-        $routeProvider.when('/view3', {templateUrl: 'partials/accelerometerView.html'});
         $routeProvider.when('/view4', {templateUrl: 'partials/deviceInfoView.html'});
-        $routeProvider.when('/view7', {templateUrl: 'partials/compassView.html'});
 
         $routeProvider.when('/loginMain', {templateUrl: 'partials/loginMainView.html', controller: 'HomeCtrl'});
         $routeProvider.when('/login', {templateUrl: 'partials/loginView.html', controller: 'HomeCtrl'});

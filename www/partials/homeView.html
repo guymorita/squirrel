@@ -1,6 +1,6 @@
 <div class="topcoat-navigation-bar">
     <div class="topcoat-navigation-bar__item center three-quarters">
-        <h1 class="topcoat-navigation-bar__title">PhoneGap+AngularJS</h1>
+        <h1 class="topcoat-navigation-bar__title">Hatch</h1>
     </div>
     <div class="topcoat-navigation-bar__item right quarter">
         <a class="topcoat-icon-button--quiet" ng-click="changeSettings()">
@@ -9,7 +9,7 @@
     </div>
 </div>
 <div class="topcoat-list__container list">
-    <h3 class="topcoat-list__header">PhoneGap API Samples</h3>
+    <h3 class="topcoat-list__header">Egg Options</h3>
     <ul class="topcoat-list">
         <li class="topcoat-list__item" ng-click="slidePage('/pinmap')">
             My Map
@@ -39,9 +39,5 @@
             Contacts
         </li>
     </ul>
-    <div class="topcoat-navigation-bar">
-        <h1 class="centerize"  ng-show="!showURL" ng-swipe-left="showURL=true">Version  {{' %VERSION%' | interpolate}} </h1>
-        <h1 class="centerize" ng-show="showURL" ng-swipe-right="showURL=false"><a href="http://devgirl.org">devgirl.org </a></h1>
-    </div>
 </div>
 <ng-include src="'partials/settingsOverlay.html'"></ng-include>
