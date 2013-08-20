@@ -20,14 +20,17 @@ myApp.factory('userService', function(){
         }
     };
 });
+
+
 myApp.factory('hatchService', function(){
-  return {
-    hatchObject: {},
-    set: function(field, value){
+    return {
+     hatchObject: {},
+     set: function(field, value){
       this.hatchObject[field] = value;
     }
   };
 });
+
 myApp.factory('phonegapReady', function() {
     return function (fn) {
         var queue = [];

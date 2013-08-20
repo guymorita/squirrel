@@ -27,6 +27,7 @@ function LoginCtrl($scope, navSvc, $resource, userService){
 }
 
 function SignUpCtrl($scope, navSvc, $resource, userService){
+  console.log($resource)
   $scope.slidePage = function (path,type) {
     navSvc.slidePage(path,type);
   };
@@ -90,28 +91,54 @@ function HomeCtrl($scope,navSvc,$rootScope, userService) {
     };
 }
 
+function NewMessage($scope, navSvc, userService, hatchService){
+  $scope.title = '';
+  $scope.content = '';
+  $scope.hidden = false;
+  $scope.next = function(path){
+    hatchService.set['title'] = $scope.title;
+    hatchService.set['content'] = $scope.content;
+    hatchService.set['hidden'] = $scope.hidden;
+    navSvc.slidePage(path);
+  }
+}
 
-  // this.onLocationFound = function(e) {
-  //     this.radius = e.accuracy / 2;
+var newPinCtrl = function($scope, navSvc, $rootScope, hatchService) {
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+    $('#map').remove();
+  };
 
-  //     L.marker(e.latlng).addTo(this.map)
-  //                       .dragging.enable();
-  //     this.newLocation = {
-  //       _id: locationID,
-  //       lat: e.latlng.lat,
-  //       lng: e.latlng.lng
-  //     }
-  //     locationObj[locationID] = newLocation;
-  //     locationID++;
-  // }
+  $scope.locationObj = {}
+  var markerCreated = false;
+  var newMap = new Map();
 
-  // this.map.on('locationfound', this.onLocationFound);
-
-  // this.onLocationError = function(e) {
-  //   alert(e.message);
-  // }
-
-  // this.map.on('locationerror', this.onLocationError);
+  $scope.onMapClick = function(e) {
+    if (!markerCreated){
+      var marker = new L.marker(e.latlng);
+      marker.addTo(newMap.map)
+        .dragging.enable()
+       $scope.locationObj = {
+        latlng: {
+          lat: e.latlng.lat,
+          lng: e.latlng.lng
+        }
+       }
+      hatchService.set['locationObj'] = $scope.locationObj;
+      marker.on('dragend', function(e){
+        $scope.locationObj = {
+          latlng: {
+            lat: e.target._latlng.lat,
+            lng: e.target._latlng.lng
+          }
+        }
+      hatchService.set['locationObj'] = $scope.locationObj;
+      });
+      markerCreated = true;
+    }
+  }
+  newMap.map.on('click', $scope.onMapClick);
+};
 
 var showPinsCtrl = function($scope,navSvc,$rootScope) {
   $scope.slidePage = function (path,type) {
@@ -128,7 +155,7 @@ var showPinsCtrl = function($scope,navSvc,$rootScope) {
         lat: 37.75599059794776,
         lng: -122.41307973861694
       },
-      message: 'helllooo<a href="http://www.google.com">link</a>'
+      message: 'helllooo'
     },
     1: {
       _id: 1,
@@ -172,48 +199,6 @@ var showPinsCtrl = function($scope,navSvc,$rootScope) {
   }
 };
 
-
-var newPinCtrl = function($scope,navSvc,$rootScope) {
-  $scope.slidePage = function (path,type) {
-    navSvc.slidePage(path,type);
-    $('#map').remove();
-  };
-
-  var locationObj = {}
-  var locationID = 0;
-  var markerCreated = false;
-  var newMap = new Map();
-
-  $scope.onMapClick = function(e) {
-    if (!markerCreated){
-      var marker = new L.marker(e.latlng);
-      marker.addTo(newMap.map)
-        .dragging.enable()
-      var newLocation = {
-        _id: locationID,
-        latlng: {
-          lat: e.latlng.lat,
-          lng: e.latlng.lng
-        }
-       }
-      locationObj[locationID] = newLocation;
-      marker.on('dragend', function(e){
-        locationObj[newLocation._id] = {
-          _id: locationID,
-          latlng: {
-            lat: e.target._latlng.lat,
-            lng: e.target._latlng.lng
-          }
-        }
-      });
-      locationID++;
-      markerCreated = true;
-    }
-  }
-  newMap.map.on('click', $scope.onMapClick);
-};
-
-
 function NotificationCtrl($scope) {
     $scope.alertNotify = function() {
         navigator.notification.alert("Sample Alert",function() {console.log("Alert success")},"My Alert","Close");
@@ -243,22 +228,10 @@ function GeolocationCtrl($scope,navSvc,$rootScope) {
     };
 }
 
-function AccelerCtrl($scope) {
-    navigator.accelerometer.getCurrentAcceleration(function (acceleration) {
-        $scope.acceleration  = acceleration;
-        },function(e) { console.log("Error finding acceleration " + e) });
-}
-
 function DeviceCtrl($scope) {
     $scope.device = device;
 }
 
-function CompassCtrl($scope) {
-    navigator.compass.getCurrentHeading(function (heading) {
-        $scope.heading  = heading;
-        $scope.$apply();
-    },function(e) { console.log("Error finding compass " + e.code) });
-}
 
 function ContactsCtrl($scope, userService, $resource) {
     $scope.allUsers = userService.allUsers;
