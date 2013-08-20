@@ -9,10 +9,16 @@ function LoginCtrl($scope, navSvc, $resource, userService){
   $scope.username = '';
   $scope.password = '';
   $scope.fetch = function(){
-    var User = $resource('http://0.0.0.0\\:8080/user/login/:username/:password');
-    var user = User.get({username:$scope.username, password:$scope.password}, function success(u, getResHeaders){
+    var Users = $resource('http://oaktree.nodejitsu.com/user/');
+    var User = $resource('http://oaktree.nodejitsu.com/user/login/:username/:password');
+    User.get({username:$scope.username, password:$scope.password}, function success(u, getResHeaders){
       console.log('u', u);
       userService.setUser(u);
+      var users = Users.get({}, function(users){
+        console.log('users', users);
+        userService.setAllUsers(users);
+      });
+
       $scope.slidePage('/newmessage');
     }, function error(u){
       console.log('err u', u);
@@ -27,16 +33,44 @@ function SignUpCtrl($scope, navSvc, $resource, userService){
   $scope.username = '';
   $scope.password = '';
   $scope.fetch = function(){
-    var User = $resource('http://0.0.0.0\\:8080/user/new/:username/:password');
+    var Users = $resource('http://oaktree.nodejitsu.com/user/');
+    var User = $resource('http://oaktree.nodejitsu.com/user/new/:username/:password');
     var user = User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
       console.log('u', u);
       userService.setUser(u);
+      var users = Users.get({}, function(users){
+        console.log('users', users);
+        userService.setAllUsers(users);
+      });
       $scope.slidePage('/newmessage');
     }, function error(u){
-
+      console.log('err u', u);
     });
   };
 }
+
+function FriendsListCtrl($scope, navSvc, $resource, userService){
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+  };
+  $scope.updateFriendList = function(){
+    _.each(userService.friends, function(userObj, key){
+      userObj['checked'] = false;
+    });
+    $scope.friends = userService.friends;
+  };
+  $scope.allUsers = userService.allUsers;
+  $scope.selectedFriends = function(){
+    // add those users to the
+    // return $filter('filter')($scope.friends, {checked:true});
+  };
+  $scope.send = function(){
+
+
+  };
+}
+
+
 
 function HomeCtrl($scope,navSvc,$rootScope, userService) {
     $rootScope.showSettings = false;
@@ -174,7 +208,7 @@ var newPinCtrl = function($scope,navSvc,$rootScope) {
       });
       locationID++;
       markerCreated = true;
-    }  
+    }
   }
   newMap.map.on('click', $scope.onMapClick);
 };
@@ -226,7 +260,8 @@ function CompassCtrl($scope) {
     },function(e) { console.log("Error finding compass " + e.code) });
 }
 
-function ContactsCtrl($scope) {
+function ContactsCtrl($scope, userService, $resource) {
+    $scope.allUsers = userService.allUsers;
     $scope.find = function() {
         $scope.contacts = [];
         var options = new ContactFindOptions();
@@ -238,8 +273,13 @@ function ContactsCtrl($scope) {
             $scope.contacts=contacts;
             $scope.$apply();
         },function(e){console.log("Error finding contacts " + e.code)},options);
-    }
-}
+    };
+    $scope.addUser = function(userSend){
+      var addUser = $resource('http://oaktree.nodejitsu.com/user/invite/:sender_id/:receiver_id');
+      addUser.get({sender_id: userService.currentUser._id, receiver_id: userSend._id}, function(u, getResHeaders){
+        console.log('u', u);
+    });
+};
 
 function CameraCtrl($scope) {
     $scope.takePic = function() {

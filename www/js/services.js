@@ -13,8 +13,20 @@ myApp.factory('userService', function(){
         currentUser: null,
         setUser: function(userObject){
           this.currentUser = userObject;
+        },
+        allUsers: null,
+        setAllUsers: function(usersArray){
+          this.allUsers = usersArray;
         }
     };
+});
+myApp.factory('hatchService', function(){
+  return {
+    hatchObject: {},
+    set: function(field, value){
+      this.hatchObject[field] = value;
+    }
+  };
 });
 myApp.factory('phonegapReady', function() {
     return function (fn) {
