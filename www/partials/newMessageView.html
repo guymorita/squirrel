@@ -14,12 +14,17 @@
     </div>
 </div>
 <div class="topcoat-list__container list" ng-controller="NewMessage">
-    <h3 class="topcoat-list__header">message messages</h3>
+    <h3 class="topcoat-list__header">Write a new message</h3>
     <ul class="topcoat-list">
     </ul>
-    <input type="text" class="topcoat-text-input" value="" placehodler="enter title" ng-model="title">
-    <br><input type="text" class="topcoat-text-input" value="" placehodler="content" ng-model="content">
-    <br>Hidden? <input type="checkbox" class="topcoat-checkbox" ng-model="hidden"></input>
-    <br><button class="topcoat-list__item" ng-click="next('/map')">Choose Location</button>
+    <p>Title</p>
+    <input type="text" class="topcoat-text-input" value="" placeholder="enter title" ng-model="title">
+    <br>
+    <p>Content</p>
+    <!-- <input type="text" class="topcoat-text-input" value="" placeholder="content" ng-model="content"> -->
+    <textarea class="topcoat-text-input" rows="4" placeholder="content" ng-model="content"></textarea>
+    <br>
+    <h4>Hidden?</h4><input type="checkbox" class="topcoat-checkbox" ng-model="hidden"></input>
+    <br><button class="topcoat-button--cta" ng-click="next('/pinmap')">Choose Location</button>
 </div>
 <ng-include src="'partials/settingsOverlay.html'"></ng-include>

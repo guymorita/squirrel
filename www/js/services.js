@@ -21,7 +21,6 @@ myApp.factory('userService', function(){
     };
 });
 
-
 myApp.factory('hatchService', function(){
     return {
      hatchObject: {},

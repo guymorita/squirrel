@@ -14,7 +14,6 @@ var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.d
         $routeProvider.when('/view1', {templateUrl: 'partials/notificationView.html'});
         $routeProvider.when('/view4', {templateUrl: 'partials/deviceInfoView.html'});
 
-        $routeProvider.when('/loginMain', {templateUrl: 'partials/loginMainView.html', controller: 'HomeCtrl'});
         $routeProvider.when('/login', {templateUrl: 'partials/loginView.html', controller: 'HomeCtrl'});
 
         $routeProvider.when('/signup', {templateUrl: 'partials/signUpView.html', controller: 'HomeCtrl'});
@@ -23,7 +22,7 @@ var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.d
 
         $routeProvider.when('/newmessage', {templateUrl: 'partials/newMessageView.html', controller: 'HomeCtrl'});
         $routeProvider.when('/map', {templateUrl: 'partials/mapView.html', controller: 'newPinCtrl'});
-        $routeProvider.when('/pinmap', {templateUrl: 'partials/mapView.html', controller: 'showPinsCtrl'});
+        $routeProvider.when('/pinmap', {templateUrl: 'partials/pinMapView.html', controller: 'showPinsCtrl'});
 
         $routeProvider.when('/home', {templateUrl: 'partials/homeView.html', controller: 'HomeCtrl'});
         $routeProvider.when('/inbox', {templateUrl: 'partials/inboxView.html', controller: 'HomeCtrl'});
@@ -33,5 +32,5 @@ var myApp = angular.module('myApp', ['myApp.filters', 'myApp.services', 'myApp.d
         $routeProvider.when('/friendSend', {templateUrl: 'partials/friendSendView.html', controller: 'FriendsListCtrl'});
         $routeProvider.when('/allUsers', {templateUrl: 'partials/allUsersView.html', controller: 'ContactsCtrl'});
 
-        $routeProvider.otherwise({redirectTo: '/loginMain'});
+        $routeProvider.otherwise({redirectTo: '/login'});
   }]);

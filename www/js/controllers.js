@@ -27,7 +27,6 @@ function LoginCtrl($scope, navSvc, $resource, userService){
 }
 
 function SignUpCtrl($scope, navSvc, $resource, userService){
-  console.log($resource)
   $scope.slidePage = function (path,type) {
     navSvc.slidePage(path,type);
   };
@@ -36,7 +35,7 @@ function SignUpCtrl($scope, navSvc, $resource, userService){
   $scope.fetch = function(){
     var Users = $resource('http://oaktree.nodejitsu.com/user/');
     var User = $resource('http://oaktree.nodejitsu.com/user/new/:username/:password');
-    var user = User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
+    User.get({username:$scope.username, password:$scope.password}, function(u, getResHeaders){
       console.log('u', u);
       userService.setUser(u);
       var users = Users.get({}, function(users){
@@ -50,28 +49,50 @@ function SignUpCtrl($scope, navSvc, $resource, userService){
   };
 }
 
-function FriendsListCtrl($scope, navSvc, $resource, userService){
+function FriendsListCtrl($scope, $filter, navSvc, $resource, userService, hatchService, $http){
   $scope.slidePage = function (path,type) {
     navSvc.slidePage(path,type);
   };
   $scope.updateFriendList = function(){
-    _.each(userService.friends, function(userObj, key){
+    _.each(userService.currentUser.friends, function(userObj, key){
       userObj['checked'] = false;
     });
-    $scope.friends = userService.friends;
+    $scope.friends = userService.currentUser.friends;
   };
   $scope.allUsers = userService.allUsers;
-  $scope.selectedFriends = function(){
-    // add those users to the
-    // return $filter('filter')($scope.friends, {checked:true});
-  };
+  $scope.selectedFriends = $filter('filter')($scope.friends, {checked:true});
+
   $scope.send = function(){
+    // build the object
+    hatchService.set('sender_id', userService.currentUser._id);
+    hatchService.set('receiver_ids', $filter('filter')($scope.friends, {checked:true}));
+    console.log('hatch', hatchService.hatchObject);
 
-
+    // $http({
+    //   url: 'http://oaktree.nodejitsu.com/message/',
+    //   method: "POST",
+    //   data: $.param(data),
+    //   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    //   }).success(function(data, status, headers, config){
+    //     console.log('data', data);
+    //   }).error(function(data, status){
+    //     console.log('err data', data);
+    //     console.log('err status', status);
+    //   });
   };
 }
 
-
+function InboxCtrl($scope, $filter, navSvc, $resource, userService){
+  $scope.slidePage = function (path,type) {
+    navSvc.slidePage(path,type);
+  };
+  $scope.getMessages = function(){
+    var Messages = $resource('http://oaktree.nodejitsu.com/message/retrieve/:user_id/');
+    Messages.get({user_id:userService.currentUser._id}, function(u, getResHeaders){
+      $scope.messages = u;
+    });
+  }
+}
 
 function HomeCtrl($scope,navSvc,$rootScope, userService) {
     $rootScope.showSettings = false;
@@ -96,11 +117,11 @@ function NewMessage($scope, navSvc, userService, hatchService){
   $scope.content = '';
   $scope.hidden = false;
   $scope.next = function(path){
-    hatchService.set['title'] = $scope.title;
-    hatchService.set['content'] = $scope.content;
-    hatchService.set['hidden'] = $scope.hidden;
+    hatchService.set('title', $scope.title);
+    hatchService.set('content', $scope.content);
+    hatchService.set('hidden', $scope.hidden);
     navSvc.slidePage(path);
-  }
+  };
 }
 
 var newPinCtrl = function($scope, navSvc, $rootScope, hatchService) {
@@ -109,7 +130,7 @@ var newPinCtrl = function($scope, navSvc, $rootScope, hatchService) {
     $('#map').remove();
   };
 
-  $scope.locationObj = {}
+  $scope.latlng = {}
   var markerCreated = false;
   var newMap = new Map();
 
@@ -118,21 +139,17 @@ var newPinCtrl = function($scope, navSvc, $rootScope, hatchService) {
       var marker = new L.marker(e.latlng);
       marker.addTo(newMap.map)
         .dragging.enable()
-       $scope.locationObj = {
-        latlng: {
+       $scope.latlng = {
           lat: e.latlng.lat,
           lng: e.latlng.lng
-        }
        }
-      hatchService.set['locationObj'] = $scope.locationObj;
+      hatchService.set('latlng', $scope.latlng);
       marker.on('dragend', function(e){
-        $scope.locationObj = {
-          latlng: {
-            lat: e.target._latlng.lat,
-            lng: e.target._latlng.lng
-          }
+        $scope.latlng = {
+          lat: e.target._latlng.lat,
+          lng: e.target._latlng.lng
         }
-      hatchService.set['locationObj'] = $scope.locationObj;
+      hatchService.set('latlng', $scope.latlng);
       });
       markerCreated = true;
     }
@@ -251,7 +268,8 @@ function ContactsCtrl($scope, userService, $resource) {
       var addUser = $resource('http://oaktree.nodejitsu.com/user/invite/:sender_id/:receiver_id');
       addUser.get({sender_id: userService.currentUser._id, receiver_id: userSend._id}, function(u, getResHeaders){
         console.log('u', u);
-    });
+      });
+    };
 };
 
 function CameraCtrl($scope) {
