@@ -12,7 +12,7 @@
   <ul class="topcoat-list">
     <li class="topcoat-list__item">
       <label class="topcoat-checkbox__label" ng-repeat="friend in friends">
-        <div class="topcoat-checkbox">{{friend.username}} {{friend._id}}</div>
+        <div class="topcoat-checkbox">{{friend.username}}</div>
         <input type="checkbox" name="friends[]" value="{{friend.username}}" ng-checked="friend.checked" ng-model="friend.checked">
       </label>
     </li>

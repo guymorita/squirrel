@@ -15,10 +15,9 @@
 </div>
 <div class="topcoat-list__container list" ng-controller="InboxCtrl" ng-init="getMessages()">
     <h3 class="topcoat-list__header">messages</h3>
-    {{messages}}
     <ul class="topcoat-list">
-        <li class="topcoat-list__item" ng-model="messages" ng-repeat="message in messages">
-            {{message.message_body}}
+        <li class="topcoat-list__item" ng-model="messages" ng-repeat="message in messages" ng-click="userService.currentUser.setCurrentRead({{message._id}});slidePage('/messageRead')">
+            {{message.title}}
         </li>
     </ul>
 </div>

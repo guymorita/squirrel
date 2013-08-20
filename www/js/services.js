@@ -17,6 +17,14 @@ myApp.factory('userService', function(){
         allUsers: null,
         setAllUsers: function(usersArray){
           this.allUsers = usersArray;
+        },
+        allMessages: null,
+        setMessages: function(messagesArray){
+            this.allMessages = messagesArray;
+        },
+        currentRead: null,
+        setCurrentRead: function(id){
+            this.currentRead = id;
         }
     };
 });

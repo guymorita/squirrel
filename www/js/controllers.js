@@ -61,24 +61,22 @@ function FriendsListCtrl($scope, $filter, navSvc, $resource, userService, hatchS
   };
   $scope.allUsers = userService.allUsers;
   $scope.selectedFriends = $filter('filter')($scope.friends, {checked:true});
-
+  var receiverIds = [];
   $scope.send = function(){
     // build the object
     hatchService.set('sender_id', userService.currentUser._id);
-    hatchService.set('receiver_ids', $filter('filter')($scope.friends, {checked:true}));
+    _.each($filter('filter')($scope.friends, {checked:true}), function(value){
+      receiverIds.push(value._id);
+    });
+    hatchService.set('receiver_ids', receiverIds);
     console.log('hatch', hatchService.hatchObject);
-
-    // $http({
-    //   url: 'http://oaktree.nodejitsu.com/message/',
-    //   method: "POST",
-    //   data: $.param(data),
-    //   headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-    //   }).success(function(data, status, headers, config){
-    //     console.log('data', data);
-    //   }).error(function(data, status){
-    //     console.log('err data', data);
-    //     console.log('err status', status);
-    //   });
+    $http.post('http://oaktree.nodejitsu.com/message/', hatchService.hatchObject)
+      .success(function(data, status, headers, config){
+        console.log('data', data);
+      }).error(function(data, status){
+        console.log('err data', data);
+        console.log('err status', status);
+      });
   };
 }
 
@@ -86,12 +84,23 @@ function InboxCtrl($scope, $filter, navSvc, $resource, userService){
   $scope.slidePage = function (path,type) {
     navSvc.slidePage(path,type);
   };
+  $scope.messages = userService.allMessages;
   $scope.getMessages = function(){
-    var Messages = $resource('http://oaktree.nodejitsu.com/message/retrieve/:user_id/');
-    Messages.get({user_id:userService.currentUser._id}, function(u, getResHeaders){
+    var Messages = $resource('http://oaktree.nodejitsu.com/message/retrieve/:user_id/', {}, { 'rec': {method: 'GET', isArray: true } });
+    Messages.get({user_id:userService.currentUser._id}, function success(u, getResHeaders){
+      console.log('retrieving messages for user_id', userService.currentUser._id, u);
+      userService.setMessages(u);
       $scope.messages = u;
+    }, function error(err, getRes){
+      console.log('err', err);
+      console.log('getRes', getRes);
     });
   }
+}
+
+function messageRead($scope, navSvc, userService){
+  $scope.message = userService.allMessages[userService.currentRead];
+
 }
 
 function HomeCtrl($scope,navSvc,$rootScope, userService) {
